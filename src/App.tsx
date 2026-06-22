@@ -12,15 +12,7 @@ const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: 'about', element: <About /> },
       { path: 'gallery', element: <Gallery /> },
-      {
-        path: '*',
-        element: (
-          <div className="text-center text-slate-400">
-            <h1 className="text-4xl font-bold text-slate-100">404</h1>
-            <p className="mt-2">ページが見つかりませんでした。</p>
-          </div>
-        ),
-      },
+      { path: '*', element: <div></div> },
     ],
   },
 ])
