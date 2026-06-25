@@ -1,9 +1,18 @@
 @import "tailwindcss";
 
 @theme {
-	--color-primary: #66bce2;
-	--color-primary-light: #b6ccd5;
-	--color-white: #ffffff;
-	--color-black: #303030;
-	--color-light: #f2f2f2;
+  --font-noto: "Noto Sans JP", sans-serif;
+  --font-roboto: "Roboto Mono", monospace;
+
+  --color-primary: #66bce2;
+  --color-primary-light: #b6ccd5;
+  --color-white: #ffffff;
+  --color-black: #303030;
+  --color-light: #f2f2f2;
+}
+
+@layer base {
+  body {
+    @apply bg-light text-black font-noto;
+  }
 }
