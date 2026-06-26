@@ -25,7 +25,7 @@ function Sidebar() {
           ))}
         </ul>
       </nav>
-      <p className="text-white text-sm">
+      <p className="text-white text-sm mt-auto">
         © {new Date().getFullYear()} CREATION WEB
       </p>
     </aside>

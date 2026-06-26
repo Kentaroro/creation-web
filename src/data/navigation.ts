@@ -23,23 +23,50 @@ export const navigationItems: NavigationItem[] = [
 ];
 
 export const headerNavigationItems: HeaderNavigationItem[] = [
-  { label: "Home", href: "/" },
   {
-    label: "LandingPage",
-    href: "/landingpage",
+    label: "サイトタイプ",
+    href: "/",
     submenu: [
-      { label: "Overview", href: "/landingpage/overview" },
-      { label: "Features", href: "/landingpage/features" },
+      { label: "コーポレート", href: "/site-type/corporate" },
+      { label: "ショップ", href: "/site-type/shop" },
+      { label: "リクルート", href: "/site-type/recruit" },
+      { label: "メディア", href: "/site-type/media" },
+      { label: "キャンペーン", href: "/site-type/campaign" },
     ],
   },
   {
-    label: "WebSite",
-    href: "/website",
+    label: "業種",
+    href: "/industry",
     submenu: [
-      { label: "Portfolio", href: "/website/portfolio" },
-      { label: "Services", href: "/website/services" },
+      { label: "レジャー", href: "/industry/leisure" },
+      { label: "飲食", href: "/industry/food" },
+      { label: "不動産", href: "/industry/real-estate" },
+      { label: "建設", href: "/industry/construction" },
     ],
   },
-  { label: "Plan", href: "/plan" },
-  { label: "Contact", href: "/contact" },
+  {
+    label: "カラー",
+    href: "/color",
+    submenu: [
+      { label: "ホワイト・ライト", href: "/color/white" },
+      { label: "ブラック・ダーク", href: "/color/dark" },
+      { label: "ブルー", href: "/color/blue" },
+      { label: "グリーン", href: "/color/green" },
+      { label: "イエロー", href: "/color/yellow" },
+      { label: "レッド", href: "/color/red" },
+    ],
+  },
+  {
+    label: "特徴",
+    href: "/feature",
+    submenu: [
+      { label: "アニメーション", href: "/feature/animation" },
+      { label: "動画", href: "/feature/video" },
+      { label: "スライダー", href: "/feature/slider" },
+      { label: "ギャラリー", href: "/feature/gallery" },
+      { label: "モーダル", href: "/feature/modal" },
+      { label: "アコーディオン", href: "/feature/accordion" },
+      { label: "メールフォーム", href: "/feature/contact-form" },
+    ],
+  },
 ];
