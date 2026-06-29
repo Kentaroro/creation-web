@@ -27,12 +27,12 @@ export default function ProductCard({
 		<div
 			id={id}
 			ref={setFancyboxRoot}
-			className="bg-white shadow-sm rounded-sm overflow-hidden"
+			className="bg-white shadow-sm rounded-sm overflow-hidden flex flex-col"
 		>
 			<figure className="bg-primary-light p-4">
 				<img src={image} alt={title} className="w-full h-full object-contain" />
 			</figure>
-			<div className="p-4 space-y-4">
+			<div className="p-4 h-full flex flex-col gap-4">
 				<h3 className="text-lg font-medium">{title}</h3>
 				<a
 					href={url}
@@ -44,15 +44,16 @@ export default function ProductCard({
 				</a>
 				<div className="flex flex-wrap gap-2 mb-6">
 					{tags.map((tag) => (
-						<div className="flex items-center gap-1 px-3 py-1 text-xs text-primary-light rounded-sm border border-primary-light">
+						<div
+							key={tag}
+							className="flex items-center gap-1 px-3 py-1 text-xs text-primary-light rounded-sm border border-primary-light"
+						>
 							<TagOutlineIcon className="size-4 mt-0.5" />
-							<span key={tag} className="flex-1">
-								{tag}
-							</span>
+							<span className="flex-1">{tag}</span>
 						</div>
 					))}
 				</div>
-				<div className="grid grid-cols-2 gap-3">
+				<div className="grid grid-cols-2 gap-3 mt-auto">
 					<a
 						href={screen.pc}
 						data-fancybox="gallery"

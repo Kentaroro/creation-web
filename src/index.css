@@ -9,6 +9,8 @@
 	--color-white: #ffffff;
 	--color-black: #303030;
 	--color-light: #f2f2f2;
+
+	--container-sidebar: 20rem;
 }
 
 @layer base {
