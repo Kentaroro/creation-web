@@ -17,11 +17,11 @@ const router = createBrowserRouter(
 				{ path: "website", element: <WebSite /> },
 				{ path: "plan", element: <Plan /> },
 				{ path: "contact", element: <Contact /> },
-				{ path: "*", element: <div></div> },
+				{ path: "*", element: <div>404</div> },
 			],
 		},
 	],
-	{ basename: "/creation-web" },
+	{ basename: "/creation-web/" },
 );
 
 function App() {
