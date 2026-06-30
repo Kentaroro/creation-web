@@ -11,18 +11,18 @@ import { useFilter } from "../contexts/FilterContext";
 
 function hasActiveDescendant(
 	option: FilterOption,
-	activeCategoryId: number | null,
+	selectedCategoryId: number | null,
 ): boolean {
-	if (activeCategoryId === null) return false;
-	if (option.id === activeCategoryId) return true;
+	if (selectedCategoryId === null) return false;
+	if (option.id === selectedCategoryId) return true;
 	return option.children.some((child) =>
-		hasActiveDescendant(child, activeCategoryId),
+		hasActiveDescendant(child, selectedCategoryId),
 	);
 }
 
 function renderFilterOptions(
 	options: FilterOption[],
-	activeCategoryId: number | null,
+	selectedCategoryId: number | null,
 	setFilter: (filter: { type: "category"; value: number } | null) => void,
 	expandedCategoryId: number | null,
 	setExpandedCategoryId: (categoryId: number | null) => void,
@@ -31,20 +31,22 @@ function renderFilterOptions(
 	return options.map((option) => {
 		const isExpanded =
 			expandedCategoryId === option.id ||
-			hasActiveDescendant(option, activeCategoryId);
+			hasActiveDescendant(option, expandedCategoryId);
 
 		return (
 			<li key={option.id}>
 				<div
 					className="relative"
 					onMouseEnter={() => setExpandedCategoryId(option.id)}
-					// onMouseLeave={() => setExpandedCategoryId(null)}
 				>
 					<button
 						type="button"
 						className={`text-black hover:text-primary transition-colors flex items-center gap-1 whitespace-nowrap ${
-							activeCategoryId === option.id ? "text-primary font-semibold" : ""
+							selectedCategoryId === option.id
+								? "text-primary font-semibold"
+								: ""
 						}`}
+						onClick={() => setFilter({ type: "category", value: option.id })}
 					>
 						{option.children.length > 0 ? (
 							<FolderOutlineIcon className="size-4 mt-0.5" />
@@ -54,10 +56,10 @@ function renderFilterOptions(
 						<span className="font-noto leading-6">{option.name}</span>
 					</button>
 					{option.children.length > 0 && isExpanded && (
-						<ul className="mt-5 flex flex-col gap-4 bg-white shadow-md rounded-sm p-6 absolute top-full left-0 z-10">
+						<ul className="flex flex-col gap-4 bg-white shadow-md rounded-sm p-6 absolute top-full left-0 z-10">
 							{renderFilterOptions(
 								option.children,
-								activeCategoryId,
+								selectedCategoryId,
 								setFilter,
 								expandedCategoryId,
 								setExpandedCategoryId,
@@ -83,7 +85,7 @@ export default function Header() {
 	return (
 		<header className="sticky top-10 left-0 right-0 w-full bg-white shadow-sm rounded-sm">
 			<div className="container mx-auto px-5 py-4">
-				<nav>
+				<nav onMouseLeave={() => setExpandedCategoryId(null)}>
 					<ul className="flex flex-wrap items-center gap-6">
 						<li>
 							<button
