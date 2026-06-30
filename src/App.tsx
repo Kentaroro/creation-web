@@ -7,7 +7,6 @@ import WebSite from "./pages/WebSite";
 import Plan from "./pages/Plan";
 import Contact from "./pages/Contact";
 import { FilterProvider, useFilter } from "./contexts/FilterContext";
-import { products as fallbackProducts } from "./data/products";
 import { fetchProducts } from "./api/wordpress";
 
 const router = createBrowserRouter(
@@ -36,14 +35,9 @@ function DataLoader() {
 		async function loadProducts() {
 			try {
 				const wpProducts = await fetchProducts();
-				if (wpProducts.length > 0) {
-					setProducts(wpProducts);
-				} else {
-					setProducts(fallbackProducts);
-				}
+				setProducts(wpProducts);
 			} catch (error) {
-				console.error("Failed to fetch products, using fallback data:", error);
-				setProducts(fallbackProducts);
+				console.error("Failed to fetch products:", error);
 			} finally {
 				setIsLoading(false);
 			}

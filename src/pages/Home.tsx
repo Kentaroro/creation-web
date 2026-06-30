@@ -10,9 +10,7 @@ function Home() {
 
 	const filteredProducts = filter
 		? typeFilteredProducts.filter((product) =>
-				product.tags.some(
-					(tag) => tag.type === filter.type && tag.value === filter.value,
-				),
+				product.tags.some((tag) => tag.value === filter.value),
 			)
 		: typeFilteredProducts;
 

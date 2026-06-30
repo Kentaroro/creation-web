@@ -69,14 +69,11 @@ export async function fetchProducts(): Promise<Product[]> {
 				const categories = terms.filter((term) => term.taxonomy === "category");
 
 				// カテゴリーからtagsを生成
-				const tags = categories.map((cat) => {
-					const parentCat = categories.find((c) => c.id === cat.parent);
-					return {
-						label: parentCat?.name || cat.name,
-						type: parentCat?.slug || cat.slug,
-						value: cat.name,
-					};
-				});
+				const tags = categories.map((cat) => ({
+					label: cat.name,
+					type: cat.slug,
+					value: cat.name,
+				}));
 
 				// ACFのscreenshotフィールドから画像URLを取得
 				let screenPc = "";
