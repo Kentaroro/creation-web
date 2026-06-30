@@ -41,12 +41,17 @@ function renderFilterOptions(
 				>
 					<button
 						type="button"
-						className={`text-black hover:text-primary transition-colors flex items-center gap-1 whitespace-nowrap ${
+						className={`text-black transition-colors flex items-center gap-2 whitespace-nowrap ${
 							selectedCategoryId === option.id
 								? "text-primary font-semibold"
-								: ""
-						}`}
-						onClick={() => setFilter({ type: "category", value: option.id })}
+								: "hover:text-primary"
+						}${option.children.length > 0 ? " cursor-default" : ""}`}
+						{...(option.children.length === 0
+							? {
+									onClick: () =>
+										setFilter({ type: "category", value: option.id }),
+								}
+							: {})}
 					>
 						{option.children.length > 0 ? (
 							<FolderOutlineIcon className="size-4 mt-0.5" />
@@ -56,7 +61,10 @@ function renderFilterOptions(
 						<span className="font-noto leading-6">{option.name}</span>
 					</button>
 					{option.children.length > 0 && isExpanded && (
-						<ul className="flex flex-col gap-4 bg-white shadow-md rounded-sm p-6 absolute top-full left-0 z-10">
+						<ul
+							className="flex flex-col gap-4 bg-white shadow-md rounded-sm p-6 absolute top-full left-0 z-10 mt-5"
+							onMouseLeave={() => setExpandedCategoryId(null)}
+						>
 							{renderFilterOptions(
 								option.children,
 								selectedCategoryId,
@@ -85,12 +93,12 @@ export default function Header() {
 	return (
 		<header className="sticky top-10 left-0 right-0 w-full bg-white shadow-sm rounded-sm">
 			<div className="container mx-auto px-5 py-4">
-				<nav onMouseLeave={() => setExpandedCategoryId(null)}>
+				<nav>
 					<ul className="flex flex-wrap items-center gap-6">
 						<li>
 							<button
 								onClick={() => setFilter(null)}
-								className={`transition-colors flex items-center gap-1 whitespace-nowrap ${
+								className={`transition-colors flex items-center gap-2 whitespace-nowrap ${
 									filter === null
 										? "text-primary font-semibold"
 										: "text-black hover:text-primary"
