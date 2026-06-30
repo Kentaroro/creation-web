@@ -1,3 +1,5 @@
+import type { Category, Product } from "../data/products";
+
 export interface WPCategory {
 	id: number;
 	name: string;
@@ -27,52 +29,59 @@ export interface WPPost {
 	};
 }
 
-export interface Product {
-	id: string;
-	type: string;
-	image: string;
-	title: string;
-	url: string;
-	tags: {
-		label: string;
-		type: string;
-		value: string;
-	}[];
-	screen: {
-		pc: string;
-		mobile: string;
-	};
+export async function fetchCategories(apiUrl: string): Promise<Category[]> {
+	try {
+		const response = await fetch(`${apiUrl}/categories?per_page=100`);
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+		const categories: WPCategory[] = await response.json();
+		return categories.map((category) => ({
+			id: category.id,
+			name: category.name,
+			slug: category.slug,
+			parent: category.parent,
+		}));
+	} catch (error) {
+		console.error("Error fetching categories from WordPress:", error);
+		return [];
+	}
 }
 
-export async function fetchProducts(): Promise<Product[]> {
+export async function fetchProducts(): Promise<{
+	products: Product[];
+	categories: Category[];
+}> {
 	const apiUrl = import.meta.env.VITE_WP_API_URL;
 
 	if (!apiUrl) {
 		console.error("VITE_WP_API_URL is not set");
-		return [];
+		return { products: [], categories: [] };
 	}
 
 	try {
-		const response = await fetch(
-			`${apiUrl}/posts?_embed=wp:featuredmedia,wp:term&per_page=100`,
-		);
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
+		const [postsResponse, categories] = await Promise.all([
+			fetch(`${apiUrl}/posts?_embed=wp:featuredmedia,wp:term&per_page=100`),
+			fetchCategories(apiUrl),
+		]);
+		if (!postsResponse.ok) {
+			throw new Error(`HTTP error! status: ${postsResponse.status}`);
 		}
-		const posts: WPPost[] = await response.json();
+		const posts: WPPost[] = await postsResponse.json();
 
 		const products: Product[] = posts
 			.filter((post) => post.acf?.type && post.acf.type !== "")
 			.map((post) => {
 				const featuredMedia = post._embedded?.["wp:featuredmedia"]?.[0];
 				const terms = post._embedded?.["wp:term"]?.flat() || [];
-				const categories = terms.filter((term) => term.taxonomy === "category");
+				const postCategories = terms.filter((term) => term.taxonomy === "category");
 
-				// カテゴリーからtagsを生成
-				const tags = categories.map((cat) => ({
+				const tags = postCategories.map((cat) => ({
+					id: cat.id,
 					label: cat.name,
 					type: cat.slug,
 					value: cat.name,
+					parent: cat.parent,
 				}));
 
 				// ACFのscreenshotフィールドから画像URLを取得
@@ -127,9 +136,9 @@ export async function fetchProducts(): Promise<Product[]> {
 				};
 			});
 
-		return products;
+		return { products, categories };
 	} catch (error) {
 		console.error("Error fetching products from WordPress:", error);
-		return [];
+		return { products: [], categories: [] };
 	}
 }

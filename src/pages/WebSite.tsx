@@ -1,18 +1,19 @@
 import ProductCard from "../components/ProductCard";
 import { useFilter } from "../contexts/FilterContext";
+import {
+	filterProductsByCategory,
+	getProductsForPage,
+} from "../data/products";
 
 function WebSite() {
-	const { filter, products } = useFilter();
+	const { filter, products, categoryMap } = useFilter();
 
-	const typeFilteredProducts = products.filter(
-		(product) => product.type === "website",
+	const typeFilteredProducts = getProductsForPage("/website", products);
+	const filteredProducts = filterProductsByCategory(
+		typeFilteredProducts,
+		filter?.value ?? null,
+		categoryMap,
 	);
-
-	const filteredProducts = filter
-		? typeFilteredProducts.filter((product) =>
-				product.tags.some((tag) => tag.value === filter.value),
-			)
-		: typeFilteredProducts;
 
 	if (filteredProducts.length === 0) {
 		return <>登録されているサイトはありません。</>;

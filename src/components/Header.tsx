@@ -1,36 +1,110 @@
-import { getFilterOptions } from "../data/products";
+import {
+	getFilterOptions,
+	getProductsForPage,
+	type FilterOption,
+} from "../data/products";
 import TagOutlineIcon from "@iconify-react/mdi/tag-outline";
+import FolderOutlineIcon from "@iconify-react/mdi/folder-outline";
+import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { useFilter } from "../contexts/FilterContext";
 
+function hasActiveDescendant(
+	option: FilterOption,
+	activeCategoryId: number | null,
+): boolean {
+	if (activeCategoryId === null) return false;
+	if (option.id === activeCategoryId) return true;
+	return option.children.some((child) =>
+		hasActiveDescendant(child, activeCategoryId),
+	);
+}
+
+function renderFilterOptions(
+	options: FilterOption[],
+	activeCategoryId: number | null,
+	setFilter: (filter: { type: "category"; value: number } | null) => void,
+	expandedCategoryId: number | null,
+	setExpandedCategoryId: (categoryId: number | null) => void,
+	level = 0,
+) {
+	return options.map((option) => {
+		const isExpanded =
+			expandedCategoryId === option.id ||
+			hasActiveDescendant(option, activeCategoryId);
+
+		return (
+			<li key={option.id}>
+				<div
+					className="relative"
+					onMouseEnter={() => setExpandedCategoryId(option.id)}
+					// onMouseLeave={() => setExpandedCategoryId(null)}
+				>
+					<button
+						type="button"
+						className={`text-black hover:text-primary transition-colors flex items-center gap-1 whitespace-nowrap ${
+							activeCategoryId === option.id ? "text-primary font-semibold" : ""
+						}`}
+					>
+						{option.children.length > 0 ? (
+							<FolderOutlineIcon className="size-4 mt-0.5" />
+						) : (
+							<TagOutlineIcon className="size-4 mt-0.5" />
+						)}
+						<span className="font-noto leading-6">{option.name}</span>
+					</button>
+					{option.children.length > 0 && isExpanded && (
+						<ul className="mt-5 flex flex-col gap-4 bg-white shadow-md rounded-sm p-6 absolute top-full left-0 z-10">
+							{renderFilterOptions(
+								option.children,
+								activeCategoryId,
+								setFilter,
+								expandedCategoryId,
+								setExpandedCategoryId,
+								level + 1,
+							)}
+						</ul>
+					)}
+				</div>
+			</li>
+		);
+	});
+}
+
 export default function Header() {
-	const { setFilter, products } = useFilter();
-	const filterOptions = getFilterOptions(products);
+	const location = useLocation();
+	const { filter, setFilter, products, categoryMap } = useFilter();
+	const [expandedCategoryId, setExpandedCategoryId] = useState<number | null>(
+		null,
+	);
+	const pageProducts = getProductsForPage(location.pathname, products);
+	const filterOptions = getFilterOptions(pageProducts, categoryMap);
 
 	return (
 		<header className="sticky top-10 left-0 right-0 w-full bg-white shadow-sm rounded-sm">
 			<div className="container mx-auto px-5 py-4">
 				<nav>
-					<ul className="flex items-center gap-6 flex-wrap">
+					<ul className="flex flex-wrap items-center gap-6">
 						<li>
 							<button
 								onClick={() => setFilter(null)}
-								className="text-black hover:text-primary transition-colors flex items-center gap-1"
+								className={`transition-colors flex items-center gap-1 whitespace-nowrap ${
+									filter === null
+										? "text-primary font-semibold"
+										: "text-black hover:text-primary"
+								}`}
 							>
-								<TagOutlineIcon className="size-4 mt-0.5" />
+								<FolderOutlineIcon className="size-4 mt-0.5" />
 								全て
 							</button>
 						</li>
-						{filterOptions.map((tag) => (
-							<li key={tag}>
-								<button
-									onClick={() => setFilter({ type: "tag", value: tag })}
-									className="text-black hover:text-primary transition-colors flex items-center gap-1"
-								>
-									<TagOutlineIcon className="size-4" />
-									<span className="font-noto leading-6">{tag}</span>
-								</button>
-							</li>
-						))}
+						{renderFilterOptions(
+							filterOptions,
+							filter?.value ?? null,
+							setFilter,
+							expandedCategoryId,
+							setExpandedCategoryId,
+						)}
 					</ul>
 				</nav>
 			</div>

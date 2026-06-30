@@ -1,18 +1,19 @@
 import ProductCard from "../components/ProductCard";
 import { useFilter } from "../contexts/FilterContext";
+import {
+	filterProductsByCategory,
+	getProductsForPage,
+} from "../data/products";
 
 function Home() {
-	const { filter, products } = useFilter();
+	const { filter, products, categoryMap } = useFilter();
 
-	const typeFilteredProducts = products.filter(
-		(product) => product.type === "landingpage" || product.type === "website",
+	const typeFilteredProducts = getProductsForPage("/", products);
+	const filteredProducts = filterProductsByCategory(
+		typeFilteredProducts,
+		filter?.value ?? null,
+		categoryMap,
 	);
-
-	const filteredProducts = filter
-		? typeFilteredProducts.filter((product) =>
-				product.tags.some((tag) => tag.value === filter.value),
-			)
-		: typeFilteredProducts;
 
 	return (
 		<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">

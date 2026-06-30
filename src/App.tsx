@@ -28,14 +28,15 @@ const router = createBrowserRouter(
 );
 
 function DataLoader() {
-	const { setProducts } = useFilter();
+	const { setProducts, setCategories } = useFilter();
 	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		async function loadProducts() {
 			try {
-				const wpProducts = await fetchProducts();
-				setProducts(wpProducts);
+				const { products, categories } = await fetchProducts();
+				setProducts(products);
+				setCategories(categories);
 			} catch (error) {
 				console.error("Failed to fetch products:", error);
 			} finally {
@@ -43,7 +44,7 @@ function DataLoader() {
 			}
 		}
 		loadProducts();
-	}, [setProducts]);
+	}, [setProducts, setCategories]);
 
 	if (isLoading) {
 		return <div className="text-center py-8">読み込み中...</div>;
