@@ -62,8 +62,7 @@ function renderFilterOptions(
 					</button>
 					{option.children.length > 0 && isExpanded && (
 						<ul
-							className="flex flex-col gap-4 bg-white shadow-md rounded-sm p-6 absolute top-full left-0 z-10 mt-5"
-							onMouseLeave={() => setExpandedCategoryId(null)}
+							className="flex flex-col gap-4 bg-white shadow-md rounded-b-sm p-6 absolute top-full left-0 z-10 mt-4"
 						>
 							{renderFilterOptions(
 								option.children,
@@ -92,8 +91,11 @@ export default function Header() {
 
 	return (
 		<header className="sticky top-10 left-0 right-0 w-full bg-white shadow-sm rounded-sm">
-			<div className="container mx-auto px-5 py-4">
-				<nav>
+			<div
+				className="container mx-auto px-5 py-4"
+				onMouseLeave={() => setExpandedCategoryId(null)}
+			>
+				<nav className="flex items-center justify-between">
 					<ul className="flex flex-wrap items-center gap-6">
 						<li>
 							<button
@@ -116,6 +118,23 @@ export default function Header() {
 							setExpandedCategoryId,
 						)}
 					</ul>
+					{/* filters */}
+					<div className="flex items-center gap-2">
+						{filter && (
+							<div className="flex items-center gap-2 bg-primary/10 px-3 py-1 rounded">
+								<TagOutlineIcon className="size-4 mt-0.5 text-primary" />
+								<span className="text-primary font-medium text-sm">
+									{categoryMap.get(filter.value)?.name}
+								</span>
+								<button
+									onClick={() => setFilter(null)}
+									className="text-primary hover:text-primary/80 transition-colors"
+								>
+									×
+								</button>
+							</div>
+						)}
+					</div>
 				</nav>
 			</div>
 		</header>

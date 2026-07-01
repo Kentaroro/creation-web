@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { navigationItems } from "../data/navigation";
 import KeyboardArrowRightIcon from "@iconify-react/mdi/keyboard-arrow-right";
 
@@ -13,16 +13,20 @@ function Sidebar() {
 				</h1>
 			</div>
 			<nav className="self-stretch">
-				<ul className="list-none space-y-4 font-roboto font-medium text-white text-xl">
+				<ul className="list-none font-roboto font-medium text-white text-xl">
 					{navigationItems.map((item) => (
 						<li key={item.href}>
-							<Link
+							<NavLink
 								to={item.href}
-								className="border-b border-white pb-2 flex justify-between items-center hover:opacity-80 transition-opacity"
+								className={({ isActive }) =>
+									`border-b border-white py-2 px-2 flex justify-between items-center hover:opacity-80 transition-opacity ${
+										isActive ? "bg-white text-primary" : ""
+									}`
+								}
 							>
 								<span>{item.label}</span>
 								<KeyboardArrowRightIcon className="size-6" />
-							</Link>
+							</NavLink>
 						</li>
 					))}
 				</ul>
